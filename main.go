@@ -53,7 +53,7 @@ func readImage(fileName string) (image.Image, error) {
 	return img, nil
 }
 
-// Calculate luma based on rgb values using ITU BT.601.  The value
+// Calculate luma based on rgb values using ITU BT.709.  The value
 // returned is between 0.0 and 1.0 so it is convenient to be used for
 // scaling other values.
 func lumaBT709(r uint32, g uint32, b uint32) float64 {
