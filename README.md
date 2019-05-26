@@ -29,7 +29,7 @@ To install
   - **`-t`** : luma threshold (0.0 to 1.0)
   - **`-l`** : use BT.701 luma function instead of BT.601 to give more
     weight to red and blue
-  - **`-m`** : create monochrome
+  - **`-c`** : use average color for area rather than just black (default true)
 
 Example usages
 
