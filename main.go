@@ -139,9 +139,9 @@ func makeDots(img image.Image, boxSize int, lumaThreshold float64, color bool, b
 			}
 
 			if color {
-				canvas.Circle((x*boxSize)+boxHalf, (y*boxSize)+boxHalf, int((1.0-luma)*float64(boxHalf)), "fill:black;stroke:none")
-			} else {
 				canvas.Circle((x*boxSize)+boxHalf, (y*boxSize)+boxHalf, int((1.0-luma)*float64(boxHalf)), fmt.Sprintf("fill:#%02x%02x%02x;stroke:none", rSum, gSum, bSum))
+			} else {
+				canvas.Circle((x*boxSize)+boxHalf, (y*boxSize)+boxHalf, int((1.0-luma)*float64(boxHalf)), "fill:black;stroke:none")
 			}
 		}
 	}
