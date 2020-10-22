@@ -1,4 +1,7 @@
 # Points
+
+[![Build Status](https://travis-ci.org/borud/points.svg?branch=master)](https://travis-ci.org/borud/points)
+
 ![Mona Lisa](images/repository-points.png)
 
 Simple utility for turning a bitmap into colored dots whose diameter
