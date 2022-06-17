@@ -16,6 +16,7 @@ import (
 	"fmt"
 	"image"
 	"log"
+	"math"
 	"os"
 	"path/filepath"
 	"strings"
@@ -31,9 +32,11 @@ var (
 	inputFile     = flag.String("f", "", "input image in either JPEG, PNG or GIF")
 	outputFile    = flag.String("o", "", "Output file")
 	boxSize       = flag.Int("b", 50, "Box size for dots")
+	scale         = flag.Int("s", 1, "Scale with which svg coordinates will be scaled")
 	lumaThreshold = flag.Float64("t", 1.0, "Luma threshold - don't draw dots above this luminescence value.  Value from 0.0 to 1.0")
 	color         = flag.Bool("c", true, "Use average color for area rather than just black")
 	bt701         = flag.Bool("l", false, "Use BT.701 instead of BT.601 for luma calculations")
+	lumaArea      = flag.Bool("a", false, "Use the luma as the surface area instead of the radius")
 )
 
 // readImage reads the source image. What formats it can understand
@@ -71,7 +74,7 @@ func lumaBT601(r uint32, g uint32, b uint32) float64 {
 // makeDots creates dots whose diameter is proportional to the
 // luminance and color is the average color of the area in the image
 // they represent.
-func makeDots(img image.Image, boxSize int, lumaThreshold float64, color bool, bt709 bool, outputFileName string) {
+func makeDots(img image.Image, boxSize int, lumaThreshold float64, color bool, bt709 bool, outputFileName string, scale int, lumaArea bool) {
 	// Create the output file
 	svgFile, err := os.Create(outputFileName)
 	if err != nil {
@@ -86,7 +89,7 @@ func makeDots(img image.Image, boxSize int, lumaThreshold float64, color bool, b
 	// the pixels of the original picture just to make coordinates
 	// match up.
 	canvas := svg.New(svgFile)
-	canvas.Start(width, height)
+	canvas.Start(width*scale, height*scale)
 	defer canvas.End()
 
 	// Calculate useful values
@@ -138,10 +141,20 @@ func makeDots(img image.Image, boxSize int, lumaThreshold float64, color bool, b
 				continue
 			}
 
-			if color {
-				canvas.Circle((x*boxSize)+boxHalf, (y*boxSize)+boxHalf, int((1.0-luma)*float64(boxHalf)), fmt.Sprintf("fill:#%02x%02x%02x;stroke:none", rSum, gSum, bSum))
+			// Calculate radius either by taking luma as area or as radius
+			// The factor 1.7 is used to compensate for the fact that otherwise the radius could never reach the maximal value
+			var radius float64
+
+			if lumaArea {
+				radius = math.Sqrt((1.0-luma)/math.Pi) * 1.7 * float64(boxHalf*scale)
 			} else {
-				canvas.Circle((x*boxSize)+boxHalf, (y*boxSize)+boxHalf, int((1.0-luma)*float64(boxHalf)), "fill:black;stroke:none")
+				radius = ((1.0 - luma) * float64(boxHalf*scale))
+			}
+
+			if color {
+				canvas.Circle(((x*boxSize)+boxHalf)*scale, ((y*boxSize)+boxHalf)*scale, int(radius), fmt.Sprintf("fill:#%02x%02x%02x;stroke:none", rSum, gSum, bSum))
+			} else {
+				canvas.Circle(((x*boxSize)+boxHalf)*scale, ((y*boxSize)+boxHalf)*scale, int(radius), "fill:black;stroke:none")
 			}
 		}
 	}
@@ -169,5 +182,5 @@ func main() {
 		outputFile = &fn
 	}
 
-	makeDots(img, *boxSize, *lumaThreshold, *color, *bt701, *outputFile)
+	makeDots(img, *boxSize, *lumaThreshold, *color, *bt701, *outputFile, *scale, *lumaArea)
 }
