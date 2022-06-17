@@ -32,7 +32,7 @@ var (
 	inputFile     = flag.String("f", "", "input image in either JPEG, PNG or GIF")
 	outputFile    = flag.String("o", "", "Output file")
 	boxSize       = flag.Int("b", 50, "Box size for dots")
-	scale         = flag.Int("s", 1, "Scale with which svg coordinates will be scaled")
+	scale         = flag.Int("s", 1, "Scale with which svg fill will be scaled compared to original file")
 	lumaThreshold = flag.Float64("t", 1.0, "Luma threshold - don't draw dots above this luminescence value.  Value from 0.0 to 1.0")
 	color         = flag.Bool("c", true, "Use average color for area rather than just black")
 	bt701         = flag.Bool("l", false, "Use BT.701 instead of BT.601 for luma calculations")
