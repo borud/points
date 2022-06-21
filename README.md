@@ -29,10 +29,12 @@ To install
   - **`-f <filename>`** : the input filename.  Accepts JPEG, PNG and GIF as input.
   - **`-o <filename>`** : the output filename. Default is original name with SVG suffix.
   - **`-b <int>`** : the box size in pixels.
+  - **`-s <int>`** : the scale with which svg fill will be scaled compared to original file.
   - **`-t`** : luma threshold (0.0 to 1.0)
   - **`-l`** : use BT.701 luma function instead of BT.601 to give more
     weight to red and blue
   - **`-c`** : use average color for area rather than just black (default true)
+  - **`-a`** : use the luma as the surface area instead of the radius (default false)
 
 Example usages
 
